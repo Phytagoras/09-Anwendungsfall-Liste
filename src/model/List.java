@@ -5,8 +5,6 @@ package model;
  */
 public class List<ContentType> {
 
-    //TODO 01: Fertigstellen der Liste
-    /* --------- Anfang der privaten inneren Klasse -------------- */
 
     // erstes Element der Liste
     ListNode first;
@@ -117,7 +115,15 @@ public class List<ContentType> {
             ListNode tmp = new ListNode(pContent);
             if (hasAccess()) {
                 tmp.setNextNode(current);
-                getPrevious(current).setNextNode(tmp);
+                if (current == first) {
+                    first = tmp;
+                } else {
+                    try {
+                        getPrevious(current).setNextNode(tmp);
+                    } catch (NullPointerException e) {
+                        e.printStackTrace();
+                    }
+                }
             } else if (isEmpty()) {
                 first = tmp;
                 last = tmp;
@@ -135,7 +141,15 @@ public class List<ContentType> {
      * @param pContent das anzuhaengende Objekt vom Typ ContentType
      */
     public void append(ContentType pContent) {
-        //TODO 01h: Inhaltsobjekt anhängen
+        if (pContent != null) {
+            ListNode node = new ListNode(pContent);
+            if (!isEmpty()) {
+                last.setNextNode(node);
+                last = node;
+            }
+            first = node;
+            last = node;
+        }
     }
 
     /**
@@ -148,7 +162,13 @@ public class List<ContentType> {
      * @param pList die am Ende anzuhaengende Liste vom Typ List<ContentType>
      */
     public void concat(List<ContentType> pList) {
-        //TODO 01i: eine Liste an eine andere anhängen
+        if(pList != this && pList != null && !pList.isEmpty()){
+            pList.toFirst();
+            while(!pList.isEmpty()){
+                this.append(pList.getContent());
+                pList.remove();
+            }
+        }
     }
 
     /**
@@ -161,8 +181,24 @@ public class List<ContentType> {
      * aktuelles Objekt mehr.
      */
     public void remove() {
-        // Nichts tun, wenn es kein aktuelles Element gibt oder die Liste leer ist.
-        //TODO 01j: eine Node samt Inhaltsobjekt entfernen
+        if(!isEmpty() && !hasAccess()){
+            if(current == first && first != last){
+                first = current.getNextNode();
+                current = first;
+            }
+            else if (first == last){
+                first = null;
+                last = null;
+                current = null;
+            }else if (current == last){
+                last = getPrevious(last);
+                current = null;
+            }else{
+                getPrevious(current).setNextNode(current.getNextNode());
+                current = current.getNextNode();
+            }
+
+        }
     }
 
     /**
@@ -176,14 +212,16 @@ public class List<ContentType> {
      * der Liste ist
      */
     private ListNode getPrevious(ListNode pNode) {
-/*        if (!isEmpty()) {
+        if (!isEmpty() && pNode != null) {
             ListNode tmpNode = first;
-            while (tmpNode != last && !tmpNode.next.equals(pNode)) {
-                tmpNode = tmpNode.next;
-            }
-            if (last.equals(pNode)) return tmpNode;
+            do {
+                if (tmpNode.getNextNode().equals(pNode)) {
+                    return tmpNode;
+                }
+                tmpNode = tmpNode.getNextNode();
+            } while (tmpNode.getNextNode() != last);
         }
-        return null;*/
+        return null;
     }
 
     private class ListNode {
