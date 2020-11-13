@@ -54,6 +54,8 @@ public class List<ContentType> {
     public void next() {
         if (current != last && current != null) {
             current = current.getNextNode();
+        } else {
+            current = null;
         }
     }
 
@@ -146,9 +148,10 @@ public class List<ContentType> {
             if (!isEmpty()) {
                 last.setNextNode(node);
                 last = node;
+            }else{
+                first = node;
+                last = node;
             }
-            first = node;
-            last = node;
         }
     }
 
@@ -162,9 +165,9 @@ public class List<ContentType> {
      * @param pList die am Ende anzuhaengende Liste vom Typ List<ContentType>
      */
     public void concat(List<ContentType> pList) {
-        if(pList != this && pList != null && !pList.isEmpty()){
+        if (pList != this && pList != null && !pList.isEmpty()) {
             pList.toFirst();
-            while(!pList.isEmpty()){
+            while (!pList.isEmpty()) {
                 this.append(pList.getContent());
                 pList.remove();
             }
@@ -181,19 +184,19 @@ public class List<ContentType> {
      * aktuelles Objekt mehr.
      */
     public void remove() {
-        if(!isEmpty() && !hasAccess()){
-            if(current == first && first != last){
+        if (hasAccess()) {
+            if (current == first && first != last) {
                 first = current.getNextNode();
                 current = first;
-            }
-            else if (first == last){
+            } else if (first == last) {
                 first = null;
                 last = null;
                 current = null;
-            }else if (current == last){
+            } else if (current == last) {
                 last = getPrevious(last);
+                last.setNextNode(null);
                 current = null;
-            }else{
+            } else {
                 getPrevious(current).setNextNode(current.getNextNode());
                 current = current.getNextNode();
             }
@@ -215,7 +218,7 @@ public class List<ContentType> {
         if (!isEmpty() && pNode != null) {
             ListNode tmpNode = first;
             do {
-                if (tmpNode.getNextNode().equals(pNode)) {
+                if (tmpNode.getNextNode() == pNode) {
                     return tmpNode;
                 }
                 tmpNode = tmpNode.getNextNode();
