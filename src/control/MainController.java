@@ -122,7 +122,23 @@ public class MainController {
      * @return String-Array der Länge 2. Index 0 = Name, Indedx 1 = Telefonnummer.
      */
     public String[] remove(int shelfIndex, int fileIndex) {
-        //TODO 06: Entfernen aus einer Liste.
+        String[] out;
+        if(shelfIndex >= 0 && shelfIndex < allShelves.length){
+            int counter = 0;
+            allShelves[shelfIndex].toFirst();
+            while (allShelves[shelfIndex].hasAccess()){
+                if(counter == fileIndex){
+                    out = new String[]{allShelves[shelfIndex].getContent().getName(), allShelves[shelfIndex].getContent().getPhoneNumber()};
+                    allShelves[shelfIndex].remove();
+                    return out;
+                }
+                counter++;
+                allShelves[shelfIndex].next();
+            }
+            out = new String[]{""+ shelfIndex, "Nicht vorhanden!"};
+            return out;
+
+        }
         return new String[]{"Nicht vorhanden", "Nicht vorhanden"};
     }
 
