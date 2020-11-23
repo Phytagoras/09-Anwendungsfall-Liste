@@ -34,7 +34,7 @@ public class MainController {
         String[] output = new String[size];
         list.toFirst();
         for (int i = 0; i < output.length; i++) {
-            output[i] = list.getContent().toString();
+            output[i] = list.getContent().getName();
             list.next();
         }
         return output;
@@ -47,8 +47,94 @@ public class MainController {
      * @return true, falls die Sortierung geklappt hat, sonst false.
      */
     public boolean sort(int index) {
-        //TODO 07: Sortieren einer Liste.
-        return false;
+        if(index >= 0 && index < allShelves.length) {
+            int counter = 0;
+            allShelves[index].toFirst();
+            while (allShelves[index].hasAccess()) {
+                allShelves[index].next();
+                counter++;
+            }
+            File[] arr = new File[counter];
+            allShelves[index].toFirst();
+            for(int i = 0; i < arr.length;i++){
+                arr[i] = allShelves[index].getContent();
+                allShelves[index].remove();
+            }
+            int longest = 0;
+            for (File file :
+                    arr) {
+                if (file != null) {
+                    if (file.getName().length() > longest) longest = file.getName().length();
+                }
+            }
+            raddixSortUltraRecrsive(arr, longest);
+            allShelves[index].insert(arr[arr.length-1]);
+            allShelves[index].toFirst();
+            for(int i = 0; i < arr.length-1; i++){
+                allShelves[index].insert(arr[i]);
+            }
+            return true;
+        }return false;
+    }
+    public void raddixSortUltraRecrsive(File[] arr, int depth){
+
+        if (depth > 0) {
+            int[] counting = new int[27];
+            for (File file :
+                    arr) {
+                if (file.getName().length() < depth) {
+                    counting[0]++;
+                } else {
+                    int charValue = file.getName().charAt(depth - 1);
+                    if (charValue == 32 || charValue == 46) counting[0]++;
+                    else {
+                        if (charValue < 97) {
+                            charValue += 32;
+                        }
+                        charValue -= 96;
+                        counting[charValue]++;
+
+                    }
+
+                }
+
+            }
+            for (int i = 1; i < 27; i++) {
+                counting[i] = counting[i] + counting[i - 1];
+            }
+            for (int i = 26; i > 0; i--) {
+                counting[i] = counting[i - 1];
+            }
+            counting[0] = 0;
+            File[] newSorted = new File[arr.length];
+
+            for (File file :
+                    arr) {
+                if (file.getName().length() < depth) {
+                    newSorted[counting[0]] = file;
+                    counting[0]++;
+                } else {
+                    int charValue = file.getName().charAt(depth - 1);
+                    if (charValue == 32 || charValue == 46) {
+                        newSorted[counting[0]] = file;
+                        counting[0]++;
+                    } else {
+                        if (charValue < 97) {
+                            charValue += 32;
+                        }
+                        charValue -= 96;
+                        newSorted[counting[charValue]] = file;
+                        counting[charValue]++;
+
+                    }
+
+                }
+
+            }
+            arr = newSorted;
+            raddixSortUltraRecrsive(arr, depth - 1);
+        }
+
     }
 
     /**
