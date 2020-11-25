@@ -215,17 +215,30 @@ public class List<ContentType> {
      * der Liste ist
      */
     private ListNode getPrevious(ListNode pNode) {
-        if (!isEmpty() && pNode != null) {
+            if(!isEmpty() && pNode != null && pNode != first){
+                ListNode temp = first;
+
+                while(temp != null && temp.getNextNode() != pNode){
+                    temp = temp.getNextNode();
+                }
+                return temp;
+            }
+            return null;
+        }
+/*        if (!isEmpty() && pNode != null) {
             ListNode tmpNode = first;
-            do {
+            while(true) {
+                tmpNode = tmpNode.getNextNode();
                 if (tmpNode.getNextNode() == pNode) {
                     return tmpNode;
                 }
-                tmpNode = tmpNode.getNextNode();
-            } while (tmpNode.getNextNode() != last);
+                if ((tmpNode.getNextNode() == last)) {
+                    break;
+                }
+            }
         }
-        return null;
-    }
+        return null;*/
+
 
     private class ListNode {
 

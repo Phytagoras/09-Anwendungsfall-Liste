@@ -8,7 +8,7 @@ import model.List;
  */
 public class MainController {
 
-    private List<File>[] allShelves;    //Ein Array, das Objekte der Klasse Liste verwaltet, die wiederum Objekte der Klasse File verwalten.
+    private final List<File>[] allShelves;    //Ein Array, das Objekte der Klasse Liste verwaltet, die wiederum Objekte der Klasse File verwalten.
 
     public MainController() {
         allShelves = new List[2];
@@ -47,7 +47,7 @@ public class MainController {
      * @return true, falls die Sortierung geklappt hat, sonst false.
      */
     public boolean sort(int index) {
-        if(index >= 0 && index < allShelves.length) {
+        if (index >= 0 && index < allShelves.length) {
             int counter = 0;
             allShelves[index].toFirst();
             while (allShelves[index].hasAccess()) {
@@ -56,7 +56,7 @@ public class MainController {
             }
             File[] arr = new File[counter];
             allShelves[index].toFirst();
-            for(int i = 0; i < arr.length;i++){
+            for (int i = 0; i < arr.length; i++) {
                 arr[i] = allShelves[index].getContent();
                 allShelves[index].remove();
             }
@@ -67,16 +67,19 @@ public class MainController {
                     if (file.getName().length() > longest) longest = file.getName().length();
                 }
             }
-            raddixSortUltraRecrsive(arr, longest);
-            allShelves[index].insert(arr[arr.length-1]);
+            arr = raddixSortUltraRecrsive(arr, longest);
+            allShelves[index].insert(arr[arr.length - 1]);
             allShelves[index].toFirst();
-            for(int i = 0; i < arr.length-1; i++){
+            for (int i = 0; i < arr.length - 1; i++) {
+                allShelves[index].toLast();
                 allShelves[index].insert(arr[i]);
             }
             return true;
-        }return false;
+        }
+        return false;
     }
-    public void raddixSortUltraRecrsive(File[] arr, int depth){
+
+    public File[] raddixSortUltraRecrsive(File[] arr, int depth) {
 
         if (depth > 0) {
             int[] counting = new int[27];
@@ -132,8 +135,9 @@ public class MainController {
 
             }
             arr = newSorted;
-            raddixSortUltraRecrsive(arr, depth - 1);
+            return raddixSortUltraRecrsive(arr, depth - 1);
         }
+        return arr;
 
     }
 
@@ -175,7 +179,17 @@ public class MainController {
      * @return true, falls das Einfügen geklappt hat, sonst false.
      */
     public boolean insertANewFile(int index, String name, String phoneNumber) {
-        //TODO 08: Einfügen einer neuen Akte an die richtige Stelle innerhalb der Liste.
+        if (index >= 0 && index < allShelves.length && name.equalsIgnoreCase("")) {
+            List<File> list = allShelves[index];
+            list.toFirst();
+            while (list.hasAccess()) {
+                if (list.getContent().getName().compareTo(name) < 0) {
+                    list.insert(new File(name, phoneNumber));
+                    return true;
+                }
+                list.next();
+            }
+        }
         return false;
     }
 
@@ -209,11 +223,11 @@ public class MainController {
      */
     public String[] remove(int shelfIndex, int fileIndex) {
         String[] out;
-        if(shelfIndex >= 0 && shelfIndex < allShelves.length){
+        if (shelfIndex >= 0 && shelfIndex < allShelves.length) {
             int counter = 0;
             allShelves[shelfIndex].toFirst();
-            while (allShelves[shelfIndex].hasAccess()){
-                if(counter == fileIndex){
+            while (allShelves[shelfIndex].hasAccess()) {
+                if (counter == fileIndex) {
                     out = new String[]{allShelves[shelfIndex].getContent().getName(), allShelves[shelfIndex].getContent().getPhoneNumber()};
                     allShelves[shelfIndex].remove();
                     return out;
@@ -221,7 +235,7 @@ public class MainController {
                 counter++;
                 allShelves[shelfIndex].next();
             }
-            out = new String[]{""+ shelfIndex, "Nicht vorhanden!"};
+            out = new String[]{"" + shelfIndex, "Nicht vorhanden!"};
             return out;
 
         }
