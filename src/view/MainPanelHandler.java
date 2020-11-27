@@ -7,6 +7,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 /**
  * Created by Jean-Pierre on 05.11.2016.
@@ -37,6 +39,17 @@ public class MainPanelHandler {
     }
 
     private void createButtons(){
+        nameTextField.addKeyListener(new KeyAdapter() {
+            public void keyTyped(KeyEvent e) {
+                char c = e.getKeyChar();
+                if (!((c >= 97) && (c <= 122) ||
+                        (c == KeyEvent.VK_SPACE) ||
+                        (c >= 65) && (c <= 90) ||
+                        (c == KeyEvent.VK_DELETE))) {
+                    e.consume();
+                }
+            }
+        });
         sortButton01.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

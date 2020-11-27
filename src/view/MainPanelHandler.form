@@ -158,7 +158,7 @@
           </grid>
         </constraints>
         <properties>
-          <text value="Müller"/>
+          <text value="Muller"/>
         </properties>
       </component>
       <component id="2a3ac" class="javax.swing.JTextField" binding="phoneNrTextField">

@@ -179,16 +179,17 @@ public class MainController {
      * @return true, falls das Einfügen geklappt hat, sonst false.
      */
     public boolean insertANewFile(int index, String name, String phoneNumber) {
-        if (index >= 0 && index < allShelves.length && name.equalsIgnoreCase("")) {
+        if (index >= 0 && index < allShelves.length && !name.equalsIgnoreCase("")) {
             List<File> list = allShelves[index];
             list.toFirst();
             while (list.hasAccess()) {
-                if (list.getContent().getName().compareTo(name) < 0) {
+                if (name.compareToIgnoreCase(list.getContent().getName()) < 0) {
                     list.insert(new File(name, phoneNumber));
                     return true;
                 }
                 list.next();
             }
+            list.append(new File(name, phoneNumber));
         }
         return false;
     }
